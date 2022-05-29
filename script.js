@@ -7,6 +7,7 @@ const targetFps = 60;
 const defaultBallsQuantity = 100;
 let level = 1;
 const ballSpeed = 2;
+const explosionRange = 6; // x blocks
 canvas.width = 1000;
 canvas.height = 800;
 ctx.scale(zoom, zoom);
@@ -130,14 +131,14 @@ const blockBounce = (ball) => {
         const pos1 = calculatePos(ball.pos.y + ball.speedY, ball.pos.x + -ball.speedX);
         if (arena[pos1.y] && arena[pos1.y][pos1.x] != null && arena[pos1.y][pos1.x] !== 0) {
             ball.speedY = -ball.speedY;
-            blockPop(pos1.y, pos1.x);
+            blockPop(pos1.x, pos1.y);
         }
         if (ball.speedX > 0) {
             // right
             const pos2 = calculatePos(ball.pos.y, ball.pos.x);
             if (arena[pos2.y] && arena[pos2.y][pos2.x + 1] != null && arena[pos2.y][pos2.x + 1] !== 0) {
                 ball.speedX = -ball.speedX;
-                blockPop(pos2.y, pos2.x);
+                blockPop(pos2.x, pos2.y);
             }
         }
         if (ball.speedX < 0) {
@@ -145,84 +146,25 @@ const blockBounce = (ball) => {
             const pos2 = calculatePos(ball.pos.y, ball.pos.x);
             if (arena[pos2.y] && arena[pos2.y][pos2.x - 1] != null && arena[pos2.y][pos2.x - 1] !== 0) {
                 ball.speedX = -ball.speedX;
-                blockPop(pos2.y, pos2.x);
+                blockPop(pos2.x, pos2.y);
             }
         }
     }
 };
-// red block
-const boom = (y, x) => {
-    if (arena[y] && arena[y][x] != null)
-        arena[y][x] = 0;
-    if (arena[y - 1] && arena[y - 1][x] != null)
-        arena[y - 1][x] = 0;
-    if (arena[y - 2] && arena[y - 2][x] != null)
-        arena[y - 2][x] = 0;
-    if (arena[y - 3] && arena[y - 3][x] != null)
-        arena[y - 3][x] = 0;
-    if (arena[y + 1] && arena[y + 1][x] != null)
-        arena[y + 1][x] = 0;
-    if (arena[y + 2] && arena[y + 2][x] != null)
-        arena[y + 2][x] = 0;
-    if (arena[y + 3] && arena[y + 3][x] != null)
-        arena[y + 3][x] = 0;
-    if (arena[y] && arena[y][x + 1] != null)
-        arena[y][x + 1] = 0;
-    if (arena[y] && arena[y][x + 2] != null)
-        arena[y][x + 2] = 0;
-    if (arena[y] && arena[y][x + 3] != null)
-        arena[y][x + 3] = 0;
-    if (arena[y] && arena[y][x - 1] != null)
-        arena[y][x - 1] = 0;
-    if (arena[y] && arena[y][x - 2] != null)
-        arena[y][x - 2] = 0;
-    if (arena[y] && arena[y][x - 3] != null)
-        arena[y][x - 3] = 0;
-    //up
-    if (arena[y - 1] && arena[y - 1][x - 1] != null)
-        arena[y - 1][x - 1] = 0;
-    if (arena[y - 1] && arena[y - 1][x - 2] != null)
-        arena[y - 1][x - 2] = 0;
-    if (arena[y - 1] && arena[y - 1][x - 3] != null)
-        arena[y - 1][x - 3] = 0;
-    if (arena[y - 1] && arena[y - 1][x + 1] != null)
-        arena[y - 1][x + 1] = 0;
-    if (arena[y - 1] && arena[y - 1][x + 2] != null)
-        arena[y - 1][x + 2] = 0;
-    if (arena[y - 1] && arena[y - 1][x + 3] != null)
-        arena[y - 1][x + 3] = 0;
-    if (arena[y - 2] && arena[y - 2][x - 1] != null)
-        arena[y - 2][x - 1] = 0;
-    if (arena[y - 2] && arena[y - 2][x - 2] != null)
-        arena[y - 2][x - 2] = 0;
-    if (arena[y - 2] && arena[y - 2][x + 1] != null)
-        arena[y - 2][x + 1] = 0;
-    if (arena[y - 2] && arena[y - 2][x + 2] != null)
-        arena[y - 2][x + 2] = 0;
-    //down
-    if (arena[y + 1] && arena[y + 1][x - 1] != null)
-        arena[y + 1][x - 1] = 0;
-    if (arena[y + 1] && arena[y + 1][x - 2] != null)
-        arena[y + 1][x - 2] = 0;
-    if (arena[y + 1] && arena[y + 1][x - 3] != null)
-        arena[y + 1][x - 3] = 0;
-    if (arena[y + 1] && arena[y + 1][x + 1] != null)
-        arena[y + 1][x + 1] = 0;
-    if (arena[y + 1] && arena[y + 1][x + 2] != null)
-        arena[y + 1][x + 2] = 0;
-    if (arena[y + 1] && arena[y + 1][x + 3] != null)
-        arena[y + 1][x + 3] = 0;
-    if (arena[y + 2] && arena[y + 2][x - 1] != null)
-        arena[y + 2][x - 1] = 0;
-    if (arena[y + 2] && arena[y + 2][x - 2] != null)
-        arena[y + 2][x - 2] = 0;
-    if (arena[y + 2] && arena[y + 2][x + 1] != null)
-        arena[y + 2][x + 1] = 0;
-    if (arena[y + 2] && arena[y + 2][x + 2] != null)
-        arena[y + 2][x + 2] = 0;
+//red block
+const boom = (x, y) => {
+    for (let arenaY = y - Math.floor(explosionRange); arenaY < y + Math.floor(explosionRange); arenaY++) {
+        for (let arenaX = x - Math.floor(explosionRange); arenaX < x + Math.floor(explosionRange); arenaX++) {
+            const expression1 = Math.pow(arenaY - y, 2);
+            const expression2 = Math.pow(arenaX - x, 2);
+            const distance = Math.sqrt(expression1 + expression2);
+            if (distance < Math.floor(explosionRange) && arena[arenaY] && arena[arenaY][arenaX] != null)
+                arena[arenaY][arenaX] = 0;
+        }
+    }
 };
 // green block
-const blockPop = (y, x) => {
+const blockPop = (x, y) => {
     const value = arena[y][x];
     if (value !== 2)
         arena[y][x] = 0;
@@ -230,7 +172,7 @@ const blockPop = (y, x) => {
         balls.push(new Ball(player.pos.x + Math.floor((player.width * zoom) / 2) + 2, player.pos.y, 0, 2));
     }
     if (value === 4)
-        boom(y, x);
+        boom(x, y);
 };
 // levels logic
 let awaiting = false;
@@ -253,6 +195,7 @@ const nextLevel = () => {
         gen(38, 40, 8, 22, 2);
         gen(0, 38, 18, 20, 4);
         gen(60, 100, 18, 20, 4);
+        gen(50, 51, 37, 38, 4);
     }
     if (level === 2) {
         gen(30, 60, 32, 34, 3);
