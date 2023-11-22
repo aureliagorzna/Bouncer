@@ -10,7 +10,7 @@ const targetFps: number = 60
 const defaultBallsQuantity: number = 100
 let level: number = 1
 const ballSpeed: number = 2
-const explosionRange = 6 // x blocks
+const explosionRange = 6
 
 canvas.width = 1000
 canvas.height = 800

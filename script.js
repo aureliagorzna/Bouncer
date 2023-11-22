@@ -7,7 +7,7 @@ const targetFps = 60;
 const defaultBallsQuantity = 100;
 let level = 1;
 const ballSpeed = 2;
-const explosionRange = 6; // x blocks
+const explosionRange = 6;
 canvas.width = 1000;
 canvas.height = 800;
 ctx.scale(zoom, zoom);
