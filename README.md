@@ -1,4 +1,4 @@
-- [PLAY](https://aureliagorzna.github.io/bouncer/)
+- [PLAY](https://aureliagorzna.github.io/Bouncer/)
 
 Old-styled "bouncer" game
 
